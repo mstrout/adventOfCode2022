@@ -1,14 +1,13 @@
 /*
    day03-set.chpl
 
-   Given an input file name, reads in the two character strings
-   per line.  
-
    usage:
     chpl day03-set.chpl
     ./day03-set < input03a.txt
 
    Things I needed to look up
+    -string.byte method
+    -range (first time?)
  */
 
 use IO, Set;
@@ -34,11 +33,9 @@ for line in stdin.lines() {
   const trimmedLine = line.strip();
   const numHalf = line.size/2;
   for i in 0..<numHalf {
-    //writeln("priority for ", line[i], " is ", calcPriority(line[i]));
     firstHalf.add( calcPriority(line[i]) );
   }
-  //writeln("firstHalf = ", firstHalf);
-  var sharedItemPriority : uint(8); // could use better error to indicate this needs a type or initialization
+  var sharedItemPriority : uint(8); // FIXME: better error to show this needs a type or initialization
   for i in numHalf..<line.size {
     //writeln("second half, item = ", line[i]);
     const itemPriority = calcPriority(line[i]);
@@ -47,10 +44,6 @@ for line in stdin.lines() {
       break;
     }
   }
-  //writeln("sharedItemPriority=", sharedItemPriority);
   total += sharedItemPriority;
 }
-
-
 writeln("total= ", total);
-
