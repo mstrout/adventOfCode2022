@@ -33,10 +33,7 @@ score[("C","X")] = 7; // 6 + 1
 score[("C","Y")] = 2; // 0 + 2
 score[("C","Z")] = 6; // 3 + 3
 
-writeln(score);
-
 var totalScore = 0;
-
 var line : string;
 
 // loop through the input
@@ -46,4 +43,3 @@ for line in stdin.lines() {
   totalScore += score[(trimmedLine[0],trimmedLine[2])];
 }
 writeln("totalScore = ", totalScore);
-
