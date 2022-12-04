@@ -1,17 +1,15 @@
 /*
    day04.chpl
 
-   FIXME
    usage:
-    chpl day03-set.chpl
-    ./day03-set < input03a.txt
+    chpl day04.chpl
+    ./day04 < input04a.txt
 
    Things I needed to look up
-    -string.byte method
-    -range (first time?)
+    -formatted input, https://chapel-lang.org/docs/main/modules/standard/IO/FormattedIO.html?highlight=readf#FormattedIO.readf
  */
 
-use IO, Set;
+use IO;
 
 var sum = 0;
 var totalB = 0;
