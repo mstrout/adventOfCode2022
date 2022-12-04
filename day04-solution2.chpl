@@ -3,7 +3,7 @@
 
    usage:
     chpl day04-solution2.chpl
-    ./day04 < input04a.txt
+    ./day04-solution2 < input04a.txt
 
    See associated blog post at 
    https://chapel-lang.org/blog/posts/aoc2022-day04-ranges/.
