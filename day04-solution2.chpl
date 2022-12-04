@@ -25,7 +25,7 @@ while readf("%i-%i,%i-%i", s1, e1, s2, e2) {
     sumSubset+= 1;
   } 
   // Partial overlap occurs if the intersection of the ranges is non-empty
-  const intersection = r1[r2]; // this operator is called slicing? FIXME
+  const intersection = r1[r2]; // this operation is called range slicing
   if intersection.size>0 {
     sumOverlap += 1;
   }
