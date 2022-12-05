@@ -63,38 +63,3 @@ for stack in crateStacks {
 }
 writeln("topOfStacks = ", topOfStacks);
 
-  /*
-var line : string;
-var linesPastStackConfig = 0; 
-for line in stdin.lines() {
-  // moving past stack config
-  if (linesPastStackConfig==0 && line[1] == "1")
-     || (linesPastStackConfig==1) {
-    linesPastStackConfig += 1;
-
-  // processing a stack configuration line, each stack is 4 characters,
-  // crate is at the second character in each stack
-  } else if linesPastStackConfig==0 {
-    const numCharsPerStack = 4;
-    for i in 1..<(line.size-1) by numCharsPerStack {
-      if line[i]!=" " {
-        crateStacks[i/numCharsPerStack + 1].insert(0,line[i]);
-      }
-    }
-    //writeln(crateStacks);
-
-  // reading the number of stacks to move from one stack to another
-  // move # from # to #, number is at index 5, from is at 12, to at 17
-  } else {
-    var num = line[5] : int;
-    var from = line[12] : int;
-    var to = line[17] : int;
-    writeln("move ", num, " from ", from, " to ", to);
-    for count in 1..num {
-      crateStacks[to].append(crateStacks[from].pop());
-    }
-    //writeln(crateStacks);
-  }
-}
-*/
-
