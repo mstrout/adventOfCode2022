@@ -13,7 +13,7 @@ use IO;
 
 var sumSubset = 0;
 var sumOverlap = 0;
-var s1,e1,s2,e2: int;
+var s1, e1, s2, e2: int;
 
 while readf("%i-%i,%i-%i", s1, e1, s2, e2) {
   // Check if the second section assignment a subset
@@ -28,5 +28,5 @@ while readf("%i-%i,%i-%i", s1, e1, s2, e2) {
   }
 }
 
-writeln("sumSubset= ", sumSubset);
-writeln("sumOverlap= ", sumOverlap);
+writeln("sumSubset = ", sumSubset);
+writeln("sumOverlap = ", sumOverlap);

@@ -16,7 +16,7 @@ use IO;
 // Chapel iterator that reads in all lines of from standard input.
 // Assuming that all lines are in the format "%i-%i,%i-%i".
 iter readSections() {
-  var s1,e1,s2,e2: int;
+  var s1, e1, s2, e2: int;
   while readf("%i-%i,%i-%i", s1, e1, s2, e2) {
     yield (s1..e1, s2..e2);
   }
@@ -34,5 +34,5 @@ forall (r1,r2) in sections with (+ reduce sumSubset, + reduce sumOverlap) {
   sumOverlap += (r1[r2]).size > 0;
 }
 
-writeln("sumSubset= ", sumSubset);
-writeln("sumOverlap= ", sumOverlap);
+writeln("sumSubset = ", sumSubset);
+writeln("sumOverlap = ", sumOverlap);
