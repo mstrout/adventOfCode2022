@@ -49,6 +49,8 @@ proc initStacks() {
 
 var crateStacks = initStacks();
 
+writeln(crateStacks);
+
 // read in and execute all of the move operations
 var num, from, to : int;
 while readf("move %i from %i to %i\n", num, from, to) {
@@ -62,4 +64,5 @@ for stack in crateStacks {
   topOfStacks += stack.pop();
 }
 writeln("topOfStacks = ", topOfStacks);
+
 

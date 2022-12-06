@@ -26,6 +26,24 @@ day03, rucksacks
 * range: `numHalf..<line.size`
 * array of sets: `var rucksack : [0..<3] set(uint(8));`,
 
+day04, ranges
+* solution1: readf, control flow
+* solution2: ranges
+* solution3: iterator, forall with reduce intents
+* I wrote blog post
+
+day05, crates
+* iterator to create arrays
+* array of lists, using lists like stacks
+* zippered iteration
+* readf
+
+day06, subsets to find message marker
+* domain
+* sets
+* forall
+* separate reduction
+
 ## Log
 
 day01, calorie count
@@ -44,3 +62,18 @@ day02, rock paper scissors
 day03, rucksacks
 * did first one in about 40 minutes
 * second one took about 30 minutes
+
+day04, ranges
+* this was my fastest one at 22 minutes for the first one and then another 13 minutes for 2nd
+* I wrote a blog post for this one that took about 12 hours
+
+day05, crate stacks
+* I really struggled with this one because I was avoiding readLine.
+  I ended up using most of Brad's answer.
+
+day06
+* The two combined took me 45 minutes.  
+* I learned more about scans and reduces.
+* The result is really fast
+
+
