@@ -82,3 +82,21 @@ proc computeSize(dir : borrowed DirNode) : int {
 }
 
 writeln("answer = ", computeSize(dirTree));
+var availSpace = 70000000 - dirTree.subtreeSize;
+writeln("availSpace = ", availSpace);
+var unusedSpaceNeeded = 30000000-availSpace;
+writeln("unusedSpaceNeeded = ", unusedSpaceNeeded);
+proc findBigEnough(dir : borrowed DirNode) : int {
+  var currMin = 70000000;
+  for subdir in dir.dirs {
+    var tmpMin = findBigEnough(subdir);
+    if tmpMin<currMin then currMin = tmpMin;
+  }
+  if (dir.subtreeSize>=unusedSpaceNeeded) && (dir.subtreeSize<currMin) {
+    return dir.subtreeSize;
+  } else {
+    return currMin;
+  }
+}
+
+writeln("part 2 answer = ", findBigEnough(dirTree));
