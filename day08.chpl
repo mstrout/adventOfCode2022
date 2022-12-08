@@ -83,4 +83,54 @@ count += + reduce (+ reduce countGrid);
 
 writeln("count = ", count);
 
+//var scoreGrid : [0..lastIndex][0..lastIndex] int = 1;
+// ERROR?: error: cannot iterate over values of type int(64)
+var scoreGrid : [0..lastIndex][0..lastIndex] int;
+var sum : int;
+var maxScore = 0;
+for row in 0..lastIndex {
+  for col in 0..lastIndex {
+    scoreGrid[row][col] = 1; 
+    const treeHeight = grid[row][col];
 
+    // go up
+    sum = 0;
+    for i in 0..row-1 by -1 {
+      if grid[i][col] <= treeHeight then sum += 1;
+      if grid[i][col] >= treeHeight then break;
+    }
+    scoreGrid[row][col] *= sum;
+    // go down
+    sum = 0;
+    for i in row+1..lastIndex {
+      if grid[i][col] <= treeHeight then sum += 1;
+      if grid[i][col] >= treeHeight then break;
+    }
+    scoreGrid[row][col] *= sum;
+    // go right 
+    sum = 0;
+    for i in col+1..lastIndex {
+      if grid[row][i] <= treeHeight then sum += 1;
+      if grid[row][i] >= treeHeight then break;
+    }
+    scoreGrid[row][col] *= sum;
+    // go left
+    sum = 0;
+    for i in 0..col-1 by -1 {
+      if grid[row][i] <= treeHeight then sum += 1;
+      if grid[row][i] >= treeHeight then break;
+    }
+    scoreGrid[row][col] *= sum;
+    if scoreGrid[row][col] > maxScore then maxScore = scoreGrid[row][col];
+  }
+}
+writeln(scoreGrid);
+
+//writeln("score = ", max reduce (max reduce scoreGrid));
+// BUG?: day08.chpl:123: error: 'min(type t)' is not defined for t=[domain(1,int(64),false)] int(64)
+
+
+// ARGH!! what am I donig wrong?
+//for row,col in grid.domain {
+//  writeln("row,col = ", (row,col));
+//}
