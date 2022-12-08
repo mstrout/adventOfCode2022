@@ -1,5 +1,5 @@
 /*
-   day05
+   day06
 
    usage:
     chpl day06.chpl

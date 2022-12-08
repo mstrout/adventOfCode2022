@@ -44,6 +44,11 @@ day06, subsets to find message marker
 * forall
 * separate reduction
 
+day07, directory tree
+* classes
+* lists
+* recursion
+
 ## Log
 
 day01, calorie count
@@ -72,8 +77,9 @@ day05, crate stacks
   I ended up using most of Brad's answer.
 
 day06
-* The two combined took me 45 minutes.  
+* The two combined took me 45 minutes.
 * I learned more about scans and reduces.
 * The result is really fast
 
-
+day07, directory tree
+* took two hours, about half reading in the input and about half solving the problems
