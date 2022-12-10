@@ -9,44 +9,66 @@ var count : int;
 var countMap : map( string, int );
 var motionList : list( (string,int) );
 while readf("%s %i\n", dir, count) {
-  writeln("dir = ", dir, ", count = ", count);
   countMap[dir] += count;
   motionList.append( (dir,count) );
 }
 writeln(countMap);
 writeln(motionList);
-//writeln(max reduce countMap.values());
-//const maxSize = max reduce countMap.values();
 const maxL = countMap["L"];
 const maxD = countMap["D"];
 const maxU = countMap["U"];
 const maxR = countMap["R"];
 var tailMarks : [-maxD..maxU,-maxL..maxR] bool;
 
-// treating 0,0 like lower left
-var tailPos = (0,0);
-var headPos = (0,0);
-var headDir : map( string, (int, int) );
-headDir["U"] = (1,0);
-headDir["D"] = (-1,0);
-headDir["L"] = (0,-1);
-headDir["R"] = (0,1);
+// four possible directions
+var headDir : map( string, [0..1] int );
+headDir["U"] = [1,0];
+headDir["D"] = [-1,0];
+headDir["L"] = [0,-1];
+headDir["R"] = [0,1];
 
+// an array for all the other knot positions
+// treating 0,0 like lower left
+config const numKnots = 1;
+var knotPos : [0..numKnots][0..1] int;
+for i in 0..numKnots do knotPos[i] = [0,0];
+writeln(knotPos);
+
+// move the head based on directions and then the rest
 for (dir,count) in motionList {
   for i in 0..<count {
-    headPos[0] += headDir[dir][0];
-    headPos[1] += headDir[dir][1];
-    writeln("headPos = ", headPos);
-    moveTail(headPos,tailPos);
-    writeln("tailPos = ", tailPos);
-    tailMarks[tailPos] = true;
+    knotPos[0][0] += headDir[dir][0];
+    knotPos[0][1] += headDir[dir][1];
+    writeln("headPos = ", knotPos[0]);
+    for j in 1..numKnots {
+      moveTail(knotPos[j-1],knotPos[j]);
+      writeln("knotPos[j] = ", knotPos[j]);
+    }
+    var coord = (knotPos[knotPos.size-1][0],
+                 knotPos[knotPos.size-1][1]); // yuck
+    tailMarks[coord] = true;
   }
 }
 
 writeln("answer = ", + reduce tailMarks );
 
-proc moveTail ( headPos : 2*int, ref tailPos : 2*int) {
-  var diff = (headPos[0]-tailPos[0], headPos[1]-tailPos[1]);
+// TRY out: use an array instead of tuple and try the
+// below in the move code
+/*
+if abs(delta[0])>1 || abs(delta[1])>1 {
+    if delta[0]>1 then tail[0] += sgn(delta[0]);
+    if delta[1]>1 then tail[1] += sgn(delta[1]);
+}
+
+Actually, with promotion, I am wondering if the following would work:
+if abs(delta[0])>1 || abs(delta[1])>1 {
+    if delta>1 then tail += sgn(delta);
+}
+*/
+
+proc moveTail ( headPos : [0..1] int, ref tailPos : [0..1] int) {
+  //var diff = (headPos[0]-tailPos[0], headPos[1]-tailPos[1]);
+  var diff = headPos-tailPos;
   //writeln("diff=",diff);
   // checking if far away enough to move
   if abs(diff[0])>=2 || abs(diff[1])>=2 {
