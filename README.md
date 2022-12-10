@@ -83,3 +83,8 @@ day06
 
 day07, directory tree
 * took two hours, about half reading in the input and about half solving the problems
+
+day10, commands
+* started in the morning after Sat workout
+* part 1 took 40 minutes
+* part 2 took 40 minutes as well
