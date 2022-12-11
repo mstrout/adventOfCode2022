@@ -84,7 +84,20 @@ day06
 day07, directory tree
 * took two hours, about half reading in the input and about half solving the problems
 
+day08, trees
+* the first part took me until midnight, so 2 hours
+* doing the second part after looking at other people's code and on day 10 and still
+  took an hour and 45 minutes
+
+day09, knots on a rope bridge
+* think part 1 was an hour, did the night of
+* part 2 was 27 minutes, did on day 10
+
 day10, commands
 * started in the morning after Sat workout
 * part 1 took 40 minutes
 * part 2 took 40 minutes as well
+
+day11, monkeys
+* part 1, 1 hour for parsing, 30 minutes for rest
+* part 2, think I need big num for this?

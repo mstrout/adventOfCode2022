@@ -14,7 +14,7 @@ iter readInput() {
 var inputLines = readInput();
 //writeln(inputLines);
 
-enum operation {mult, add, double};
+enum operation {mult, add, double, square};
 
 record monkey {
   var items : list(int);
@@ -36,9 +36,7 @@ for i in 0..#numMonkeys {
   // Monkey #, i==# so don't need to parse
   // Starting items: 79, 98
   var startItemsStrs = inputLines[i*linesPer+1].split(":");
-  writeln("startItemsStrs[1] = ", startItemsStrs[1]);
   for item in startItemsStrs[1].split(",") {
-    writeln("item = ", item);
     monkeyState[i].items.append(item : int); 
   }
   // Operation: new = old * 19
@@ -51,7 +49,11 @@ for i in 0..#numMonkeys {
   //writeln("wholeLine=", inputLines[i*linesPer+2], "=");
   var operandStr = inputLines[i*linesPer+2][opIdx+2..];
   if operandStr == "old" {
-    monkeyState[i].op = operation.double;
+    if monkeyState[i].op == operation.mult {
+      monkeyState[i].op = operation.square;
+    } else {
+      monkeyState[i].op = operation.double;
+    }
   } else {
     monkeyState[i].operand = 
       inputLines[i*linesPer+2][opIdx+2..] : int;
@@ -63,14 +65,67 @@ for i in 0..#numMonkeys {
     inputLines[i*linesPer+3][testNumIdx..] : int;
 
   // If true: throw to monkey 2
-  const falseIdx = 25;
-  monkeyState[i].ifFalse = inputLines[i*linesPer+4][falseIdx..] : int;
+  const trueIdx = 25;
+  monkeyState[i].ifTrue = inputLines[i*linesPer+4][trueIdx..] : int;
 
   // If false: throw to monkey 3
-  const trueIdx = 26;
-  monkeyState[i].ifTrue = inputLines[i*linesPer+5][trueIdx..] : int;
+  const falseIdx = 26;
+  monkeyState[i].ifFalse = inputLines[i*linesPer+5][falseIdx..] : int;
 }
 
 writeln(monkeyState);
 
+proc writeItems() {
+  for i in 0..#numMonkeys {
+    write("Monkey ", i, ": ");
+    for item in monkeyState[i].items {
+      write(item, ", ");
+    }
+    writeln();
+  }
+}
+
+writeItems();
+
+proc applyOp(op : operation, old : int, operand : int) {
+  select op {
+    when operation.mult   do return old * operand;
+    when operation.add    do return old + operand;
+    when operation.double do return old + old;
+    when operation.square do return old * old;
+    otherwise return -1;
+  }
+}
+
+// Do rounds and keep track of how many items each
+// monkey inspects
+var count : [0..#numMonkeys] int;
+for round in 1..numRounds {
+  for i in 0..#numMonkeys {
+    for item in monkeyState[i].items {
+      count[i]+=1;
+      var opResult = applyOp( monkeyState[i].op, item,
+                              monkeyState[i].operand);
+      opResult = opResult / 3;
+      if opResult % monkeyState[i].testNum == 0 {
+        const trueIdx = monkeyState[i].ifTrue;
+        monkeyState[trueIdx].items.append(opResult);
+      } else {
+        const falseIdx = monkeyState[i].ifFalse;
+        monkeyState[falseIdx].items.append(opResult);
+      }
+    }
+    monkeyState[i].items.clear();
+  }
+  writeln();
+  writeItems();
+}
+
+// compute monkey business
+var max1 = max reduce count;
+for idx in count.domain {
+  if count[idx] == max1 then count[idx]=0;
+}
+var max2 = max reduce count;
+writeln("result = ", max1*max2);
 
