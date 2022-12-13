@@ -100,4 +100,16 @@ day10, commands
 
 day11, monkeys
 * part 1, 1 hour for parsing, 30 minutes for rest
-* part 2, think I need big num for this?
+* part 2, think I need big num for this?  that didn't work, multiplying
+  all test numbers together and mod by that number works because then all mods would
+  end up with same result
+* ran into the syntax error at the bottom of the file if I forgot a closing curly
+  somewhere
+* `var op : operation;`, when you put `enum` before operation, the resulting error
+  isn't helpful
+
+day12, path finding
+* part 1, spent about an hour on it in the morning, but haven't solved yet
+
+day13, comparing nested lists
+* part 1, 1 hour at night and then 20 minutes in the morning, works on test but not full
