@@ -32,6 +32,7 @@ var rightOrder : set(int); // hoping I can reduce over set
 for whichPair in 1..numPairs {
   var lhs = inputLines[lineIdx(whichPair)];
   var rhs = inputLines[lineIdx(whichPair)+1];
+  writeln();
   writeln("lhs = ", lhs);
   writeln("rhs = ", rhs);
   var i = 0;
@@ -49,7 +50,6 @@ proc findInt(str : string, idx : int, ref numChars, ref val) {
   }
   numChars = count;
   val = str[idx..#count] : int;
-  writeln("numChars = ", numChars);
   writeln("val = ", val);
 }
 
@@ -57,21 +57,22 @@ proc checkRightOrder(lhs, rhs : string,
                      l_idx,r_idx : int) : bool {
   if lhs[l_idx]=='[' && rhs[r_idx]=='[' {
     writeln("lhs[l_idx]=='[' && rhs[r_idx]=='['");
-    checkRightOrder(lhs, rhs, l_idx+1, r_idx+1);
+    return checkRightOrder(lhs, rhs, l_idx+1, r_idx+1);
 
   } else if lhs[l_idx]=='[' && rhs[r_idx].isDigit() {
     writeln("lhs[idx]=='[' && rhs[idx].isDigit()");
-    checkRightOrder(lhs, rhs, l_idx+1, r_idx);
+    return checkRightOrder(lhs, rhs, l_idx+1, r_idx);
 
   } else if rhs[r_idx]=='[' && lhs[l_idx].isDigit() {
     writeln("rhs[idx]=='[' && lhs[idx].isDigit()");
-    checkRightOrder(lhs, rhs, l_idx, r_idx+1);
+    return checkRightOrder(lhs, rhs, l_idx, r_idx+1);
 
   } else if lhs[l_idx].isDigit() && rhs[r_idx].isDigit() {
     writeln("lhs[idx].isDigit() && rhs[idx].isDigit()"); 
     var l_val, l_numChars, r_val, r_numChars : int;
     findInt(lhs, l_idx, l_numChars, l_val);
     findInt(rhs, r_idx, r_numChars, r_val);
+    writeln("l_val = ", l_val, ", rval = ", r_val);
     if l_val < r_val then return true;
     else if l_val > r_val then return false;
     else return checkRightOrder(lhs, rhs, l_idx+l_numChars, r_idx+r_numChars); 
@@ -83,6 +84,16 @@ proc checkRightOrder(lhs, rhs : string,
   } else if lhs[l_idx]=="]" && rhs[r_idx] == "]" {
     writeln("lhs[l_idx]==']' && rhs[r_idx] ==']'");
     return checkRightOrder(lhs, rhs, l_idx+1, r_idx+1);
+
+  } else if lhs[l_idx]=="]" && rhs[r_idx] != "]" {
+    writeln("lhs[l_idx]==']' && rhs[r_idx] !=']'");
+    // lhs shorter than right
+    return true;
+
+  } else if lhs[l_idx]!="]" && rhs[r_idx] == "]" {
+    writeln("lhs[l_idx]!=']' && rhs[r_idx] ==']'");
+    // rhs shorter than left
+    return false;
 
   } else {
     writeln("Not implemented");
