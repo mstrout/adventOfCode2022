@@ -61,9 +61,10 @@ while input[zeroIdx][1]!=0 {
 }
 //writeln("zeroIdx = ", zeroIdx);
 
-writeln("calcTargetIndex(4,10)-1 should equal 0, ", calcTargetIndex(4,10)-1);
-writeln("calcTargetIndex(4,18)-1 should equal 1, ", calcTargetIndex(4,18)-1);
-writeln("calcTargetIndex(5,4) should equal 3, ", calcTargetIndex(5,4));
+// These are only relevant for the testin20a.txt input
+//writeln("calcTargetIndex(4,10)-1 should equal 0, ", calcTargetIndex(4,10)-1);
+//writeln("calcTargetIndex(4,18)-1 should equal 1, ", calcTargetIndex(4,18)-1);
+//writeln("calcTargetIndex(5,4) should equal 3, ", calcTargetIndex(5,4));
 
 var first = input[calcTargetIndex(1000,zeroIdx)-1][1],
     second = input[calcTargetIndex(2000,zeroIdx)-1][1],
@@ -72,7 +73,7 @@ writeln("1000 past zero = ", first);
 writeln("2000 past zero = ", second);
 writeln("3000 past zero = ", third);
 
-writeln("anwer = ", first+second+third);
+writeln("answer = ", first+second+third);
 
 proc calcTargetIndex(val, idx : int) {
   var targetIdx : int;
@@ -82,12 +83,13 @@ proc calcTargetIndex(val, idx : int) {
     var mod = (abs(val)-toBegin) % input.size;
     targetIdx = if mod>1 then input.size-mod-1 else 0;
     //targetIdx = input.size-1 - ((abs(val) - toBegin)%input.size);
-    writeln("wrap left: targetIdx = ", targetIdx);
+    //writeln("wrap left: targetIdx = ", targetIdx);
   } else if val>0 && (idx+val)>=input.size { // wrap around to right
     //targetIdx = (idx + val + 1*(1+val/input.size)) % input.size;
     var toEnd = input.size - idx;
-    targetIdx = (val-toEnd) % input.size + 1;
-    writeln("wrap right: targetIdx = ", targetIdx);
+    var mod = (val-toEnd) % input.size;
+    targetIdx = if mod<input.size-1 then mod+1 else input.size-1;
+    //writeln("wrap right: targetIdx = ", targetIdx);
   } else {
     targetIdx = (idx + val) % input.size;
   }
