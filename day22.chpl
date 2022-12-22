@@ -17,12 +17,13 @@ writeln("numRows = ", numRows);
 
 var rowSize : int = max reduce [i in 0..#numRows] arrayOfLineStrings[i].size;
 writeln("rowSize = ", rowSize);
+rowSize -= 1;  // taking off newline
 
-var dom = {1..numRows,1..(rowSize-1)}; // taking off newline
+var dom = {1..numRows,1..rowSize};
 var grid : [dom] string;
 for (r,c) in dom {
   //writeln("r,c = ", r, ", ", c, ", arrayOfLineStrings[r-1].size = ", arrayOfLineStrings[r-1].size);
-  if c-1<arrayOfLineStrings[r-1].size {
+  if c-1<arrayOfLineStrings[r-1].size-1 { // last -1 to take off newline
     grid[r,c] = arrayOfLineStrings[r-1][c-1];
   } else {
     grid[r,c] = " ";
@@ -37,25 +38,42 @@ writeln("directions.size = ", directions.size);
 var tokens = tokenize(directions);
 writeln("tokens = ", tokens);
 
-enum face {right, down, left, up};
+enum face {right=0, down=1, left=2, up=3};
 var facing : face;
 var curr : 2*int = findStart();
 writeln("curr = ", curr);
 
 // move around grid
 for tok in tokens {
+  //writeln();
+  //writeln("tok = ", tok);
   select tok {
     when "R" { facing = rotateRight( facing ); }
     when "L" { facing = rotateLeft( facing ); }
     otherwise {
       // move forward for given count
       var count = tok : int;
-      writeln("count = ", count);
-      writeln("findNextCoord = ", findNextCoord(curr, facing) );
+      while count > 0 {
+        curr = findNextCoord(curr, facing);
+        count -= 1;
+        //writeln("curr = ", curr);
+      }
     }
   }
-  writeln("facing = ", facing);
-  writeln("curr = ", curr);
+  writeln("tok end: facing = ", facing);
+  writeln("tok end: curr = ", curr);
+}
+
+var (r,c) = curr;
+writeln("answer = ", 1000*r + 4*c + facing:int);
+
+proc wrapAroundIfNeeded( curr : 2*int ) : 2*int {
+  var (r,c) = curr;
+  if r<1 { r=numRows; }
+  else if r>numRows { r = 1; }
+  else if c<1 { c=rowSize; }
+  else if c>rowSize { c = 1; }
+  return (r,c);
 }
 
 proc findNextCoord(curr : 2*int, facing : face) : 2*int {
@@ -66,12 +84,18 @@ proc findNextCoord(curr : 2*int, facing : face) : 2*int {
     when face.left do incr = (0,-1);
     when face.up do incr = (-1,0);
   }
-  var next = curr + incr;
-  var (r,c) = next;
-  // wrap around
 
-  // 
-  return next;
+  var next = curr;
+  do {
+    next = wrapAroundIfNeeded(next + incr);
+  } while grid[next]==" ";
+
+  //writeln("next finding first nonblank = ", next);
+  if grid[next] == "#" {
+    return curr;
+  } else {
+    return next;
+  }
 }
 
 proc rotateLeft( curr : face ) : face {
