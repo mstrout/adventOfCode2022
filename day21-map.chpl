@@ -5,6 +5,7 @@ use IO, Map, List;
 enum operation {value, mult, add, divide, subtract};
 
 record monkey {
+  var name : string;
   var operands : list(string); 
   var op : operation;
   var value : int;
@@ -22,8 +23,8 @@ for i in 0..#numMonkeys {
   // input format is either
   //    root: pppw + sjmn
   //    dbpl: 5
-  var name = inputLines[i][0..3];
   var m : monkey;
+  m.name = inputLines[i][0..3];
   var j = 6;  // index where operand or number will start
   while j<inputLines[i].size && inputLines[i][j].isDigit() { j += 1; }
   if j>6 { m.value = inputLines[i][6..<j] : int; }
@@ -39,7 +40,7 @@ for i in 0..#numMonkeys {
       otherwise { writeln("unknown op"); }
     }
   }
-  monkeyState[name] = m;
+  monkeyState[m.name] = m;
 }
 
 //writeln(monkeyState);
@@ -56,5 +57,88 @@ proc computeValue(m : monkey) : int {
   }
 }
 
-writeln("answer = ", computeValue(monkeyState["root"]));
+writeln("part one answer = ", computeValue(monkeyState["root"]));
 
+// part two
+writeln("part two answer = ", computeHumanValue(monkeyState["root"],0));
+
+proc dependsOnHuman(m : monkey) : bool {
+  if m.op == operation.value && m.name=="humn" {
+    return true;
+  } else if m.op == operation.value {
+    return false;
+  } else {
+    var op0 = m.operands[0];
+    var op1 = m.operands[1];
+    return dependsOnHuman(monkeyState[m.operands[0]]) || dependsOnHuman(monkeyState[m.operands[1]]);
+  }
+}
+
+
+// FIXME: not pretty, refactor possible?
+proc computeHumanValue(m : monkey, match : int) : int {
+  var valSubtree : monkey;
+  var humnSubtree : monkey;
+
+  //writeln();
+  //writeln("m = ", m, ", match = ", match);
+
+  if m.op == operation.value {
+    if m.name == "humn" then return match;
+    else {
+      writeln("ERROR: shouldn't get here");
+      return -1;
+    }
+
+  } else {
+    var op0 = m.operands[0];
+    var op1 = m.operands[1];
+    if dependsOnHuman(monkeyState[op1]) {
+      valSubtree = monkeyState[op0];
+      humnSubtree = monkeyState[op1];
+    } else {
+      valSubtree = monkeyState[op1];
+      humnSubtree = monkeyState[op0];
+    }
+    //writeln("valSubtree = ", valSubtree);
+    //writeln("humnSubtree = ", humnSubtree);
+
+    if m.name=="root" {
+      //writeln("at root, computeValue(valSubtree) = ", computeValue(valSubtree));
+      return computeHumanValue(humnSubtree, computeValue(valSubtree));
+    
+    } else {
+
+      select m.op {
+        when operation.mult { // newmatch*computeValue(valSubtree) = match
+          //writeln("match/computeValue(valSubtree) = ", match/computeValue(valSubtree));
+          return computeHumanValue(humnSubtree, match/computeValue(valSubtree));
+        }
+        when operation.add {
+          //writeln("match-computeValue(valSubtree) = ", match-computeValue(valSubtree));
+          return computeHumanValue(humnSubtree, match-computeValue(valSubtree));
+        }
+        when operation.divide {
+          if dependsOnHuman(monkeyState[op0]) { // newmatch/computeValue(valSubtree) = match
+            //writeln("match*computeValue(valSubtree) = ", match*computeValue(valSubtree));
+            return computeHumanValue(humnSubtree, match*computeValue(valSubtree));
+          } else {                              // computeValue(valSubtree)/newmatch = match
+            //writeln("computeValue(valSubtree)/match = ", computeValue(valSubtree)/match);
+            return computeHumanValue(humnSubtree, computeValue(valSubtree)/match);
+          }
+        }
+
+        when operation.subtract {
+          if dependsOnHuman(monkeyState[op0]) { // newmatch - computeValue(valSubtree) = match
+            //writeln("match+computeValue(valSubtree) = ", match+computeValue(valSubtree));
+            return computeHumanValue(humnSubtree, match+computeValue(valSubtree));
+          } else {                              // computeValue(valSubtree)-newmatch = match
+            //writeln("computeValue(valSubtree)-match = ", computeValue(valSubtree)-match);
+            return computeHumanValue(humnSubtree, computeValue(valSubtree)-match);
+          }
+        }
+        otherwise return 0;
+      }
+    }
+  }
+}  
