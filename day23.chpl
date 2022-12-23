@@ -73,18 +73,23 @@ dirList.append((0,-1));
 dirList.append((0,1));
 
 for round in 1..numRounds {
+  doRound();
+}
+
+// accessing a lot of globals
+proc doRound() : bool {
   var nextSet : set(2*int);
   var proposedSet : set(2*int);
   var proposedMap : map(2*int,2*int);
   var dontMove : set(2*int);
 
   for (r,c) in current {
-    writeln();
-    writeln("r,c = ", (r,c));
+    //writeln();
+    //writeln("r,c = ", (r,c));
     var neighbors : set(2*int);
     for (diffR,diffC) in allDirections do neighbors.add( (diffR,diffC) + (r,c));
-    writeln(neighbors);
-    writeln(neighbors & current);
+    //writeln(neighbors);
+    //writeln(neighbors & current);
     // as long as there is at least one elf neighbor
     var neighborElves = neighbors & current;
     if neighborElves.size>0 {
@@ -105,8 +110,8 @@ for round in 1..numRounds {
       } // set over possible directions
     }
   }
-  writeln("proposedSet = ", proposedSet);
-  writeln("proposedMap = ", proposedMap);
+  //writeln("proposedSet = ", proposedSet);
+  //writeln("proposedMap = ", proposedMap);
 
   // 2nd part of round, move elf if proposed direction is still in proposedSet
   for (r,c) in current {
@@ -116,14 +121,16 @@ for round in 1..numRounds {
       nextSet.add( (r,c) );
     }
   }
+  if current == nextSet then return true;
   current = nextSet;
-  writeln("current = ", current);
+  //writeln("current = ", current);
 
   // shift the directions
   var tempSet = setList.pop(0);
   setList.append(tempSet);
   var tempDir = dirList.pop(0);
   dirList.append(tempDir);
+  return false;
 }
 
 // compute the bounding box and then subtract the number of elves
@@ -142,4 +149,9 @@ minC = min reduce cSet;
 maxC = max reduce cSet;
 
 writeln("answer = ", (maxR-minR+1)*(maxC-minC+1) - current.size);
+
+// part 2
+var count = numRounds;
+while ! doRound() do count+= 1;
+writeln("part 2 answer = ", count);
 
