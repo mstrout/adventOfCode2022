@@ -39,15 +39,20 @@ for pos in stormArea {
 //writeln("firstGrid = ", firstGrid);
 gridMap[0] = firstGrid;
 
-writeln("first part = ", findShortestPath(start));
+const firstTrip = findShortestPath(0,start,target);
+writeln("first part = ", firstTrip);
+moveStorms(firstTrip);
+const secondTrip = findShortestPath(firstTrip,target,start);
+moveStorms(secondTrip);
+writeln("second part = ", findShortestPath(secondTrip,start,target));
 
 // try to modify the BFS from day12 to work in this case
-proc findShortestPath(from : 2*int) {
+proc findShortestPath(startMinute : int, from : 2*int, to: 2*int) {
   var visited : set((2*int,int)); // don't want to visit same location in same minute > once
   var queue : list((2*int,int)); // coordinate and minute
-  queue.append((start,0));
+  queue.append((from,startMinute));
 
-  var minute : int;
+  var minute = startMinute;
   var currPos : 2*int;
   while queue.size > 0 {
     //writeln("queue = ", queue);
@@ -57,10 +62,10 @@ proc findShortestPath(from : 2*int) {
     for diff in ( (0,1), (1,0), (0,0), (-1,0), (0,-1) ) {
       var neigh = currPos + diff;
       //writeln("neigh = ", neigh);
-      if neigh==target {
+      if neigh==to {
         return minute+1; // since doing BFS, we know this is shortest distance
 
-      } else if (stormArea.contains(neigh) || neigh==start)
+      } else if (stormArea.contains(neigh) || neigh==from)
                 && !visited.contains((neigh,minute+1))
                 && clearOfStorms(minute+1, neigh) {
         queue.append((neigh,minute+1));
@@ -73,7 +78,7 @@ proc findShortestPath(from : 2*int) {
 
 // reads the global gridMap and start
 proc clearOfStorms( minute : int, pos : 2*int) : bool {
-  if pos==start { return true; }
+  if pos==start || pos==target { return true; }
   if ! gridMap.contains(minute) { moveStorms( minute ); }
   return gridMap[minute][pos].isEmpty();
 }
