@@ -36,41 +36,30 @@ for (pos,str) in zip(gridDomain,grid) {
 }
 writeln("startPos = ", startPos);
 
-// find shortest path to end
-var minPath : list(2*int);
-var minPathSize = gridDomain.size;
 var visited : set(2*int);
-findPath( startPos, minPath, visited );
-//writeln("minPath = ", minPath);
-writeln("minPathSize = ", minPathSize);
+var queue : list((2*int,int)); // coordinate and distance from start
 
+queue.append((startPos,0));
 
-// accesses global variables minPath and grid
-// NOTE: using "in" intent so can modify local copy of parameters
-proc findPath ( currPos : 2*int, in pathSoFar : list(2*int), in alreadyVisited : set(2*int) ) {
-  if grid[currPos] == "E" {
+while queue.size > 0 {
+  //writeln("queue = ", queue);
+  var ((r,c),dist) = queue.pop(0);
+  //writeln("(r,c) = ", (r,c), ", dist = ", dist);
+  if grid[(r,c)] == "E" {
     writeln("Found E");
-    if pathSoFar.size < minPathSize {
-      minPath = pathSoFar;
-      minPathSize = minPath.size;
-      writeln("minPath = ", minPath);
-      writeln("minPathSize = ", minPathSize);
-    }
-  } else {
-    var currHeight = calcHeight(grid[currPos]);
-    for diff in ( (0,1), (1,0), (-1,0), (0,-1) ) {
-      var neigh = currPos + diff;
-      if pathSoFar.size > minPathSize { break; }
-      if alreadyVisited.contains( neigh ) { continue; }
-      if ! gridDomain.contains( neigh ) { continue; }
-      if calcHeight(grid[neigh]) > currHeight+1 { continue; }
-      pathSoFar.append(neigh);
-      alreadyVisited.add(neigh);
-      findPath( neigh, pathSoFar, alreadyVisited );
-    }
+    writeln("dist = ", dist);
+    break;
+  }
+  var currHeight = calcHeight(grid[(r,c)]);
+  for diff in ( (0,1), (1,0), (-1,0), (0,-1) ) {
+    var neigh = (r,c) + diff;
+    if !gridDomain.contains(neigh) { continue; }
+    if calcHeight(grid[neigh]) > currHeight+1 { continue; }
+    if visited.contains( neigh ) { continue; }
+    queue.append((neigh,dist+1));
+    visited.add(neigh);
   }
 }
-
 
 // FIXME: using a param for these two gave me weird errors
 const lowest : int = 0;
