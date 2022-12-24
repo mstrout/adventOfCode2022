@@ -35,30 +35,52 @@ for (pos,str) in zip(gridDomain,grid) {
   }
 }
 writeln("startPos = ", startPos);
+writeln("part 1: answer = ", findShortestPath(startPos));
 
-var visited : set(2*int);
-var queue : list((2*int,int)); // coordinate and distance from start
+// now for part 2
+var startArray = findStarts();
+var pathLength : [0..<startArray.size] int;
+for (i,pos) in zip(0..#startArray.size,startArray) {
+  pathLength[i] = findShortestPath(pos);
+}
 
-queue.append((startPos,0));
+writeln("part 2: answer = ", min reduce pathLength);
 
-while queue.size > 0 {
-  //writeln("queue = ", queue);
-  var ((r,c),dist) = queue.pop(0);
-  //writeln("(r,c) = ", (r,c), ", dist = ", dist);
-  if grid[(r,c)] == "E" {
-    writeln("Found E");
-    writeln("dist = ", dist);
-    break;
+iter findStarts() {
+  for (pos,str) in zip(gridDomain,grid) {
+    if str=="S" || str=="a" {
+      yield pos;
+    }
   }
-  var currHeight = calcHeight(grid[(r,c)]);
-  for diff in ( (0,1), (1,0), (-1,0), (0,-1) ) {
-    var neigh = (r,c) + diff;
-    if !gridDomain.contains(neigh) { continue; }
-    if calcHeight(grid[neigh]) > currHeight+1 { continue; }
-    if visited.contains( neigh ) { continue; }
-    queue.append((neigh,dist+1));
-    visited.add(neigh);
+}
+
+proc findShortestPath(from : 2*int) {
+  var visited : set(2*int);
+  var queue : list((2*int,int)); // coordinate and distance from start
+
+  queue.append((from,0));
+
+  var r, c, dist : int;
+  while queue.size > 0 {
+    //writeln("queue = ", queue);
+    ((r,c),dist) = queue.pop(0);
+    //writeln("(r,c) = ", (r,c), ", dist = ", dist);
+    if grid[(r,c)] == "E" {
+      writeln("Found E");
+      writeln("dist = ", dist);
+      return dist;
+    }
+    var currHeight = calcHeight(grid[(r,c)]);
+    for diff in ( (0,1), (1,0), (-1,0), (0,-1) ) {
+      var neigh = (r,c) + diff;
+      if !gridDomain.contains(neigh) { continue; }
+      if calcHeight(grid[neigh]) > currHeight+1 { continue; }
+      if visited.contains( neigh ) { continue; }
+      queue.append((neigh,dist+1));
+      visited.add(neigh);
+    }
   }
+  return grid.domain.size; // will get here if can't find path
 }
 
 // FIXME: using a param for these two gave me weird errors
